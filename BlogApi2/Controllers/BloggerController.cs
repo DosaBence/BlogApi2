@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BlogApi2.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MySqlConnector;
 
 namespace BlogApi2.Controllers
 {
@@ -8,12 +10,45 @@ namespace BlogApi2.Controllers
     public class BloggerController : ControllerBase
     {
 
-        public readonly string ConnectionString = "server=localhost;database=blog2;password=";
+        public readonly string ConnectionString = "server=localhost;database=blog2;user=root;password=";
 
-        [HttpGet("bloggers")] //attribútum
+        [HttpGet("bloggers")] //attribútum, végpont
         public object GetAllBlogger() 
         {
-            return "Hello World";
+
+            List<Blogger>lista= new List<Blogger>();
+
+
+
+            var connector = new MySqlConnection(ConnectionString);
+
+            connector.Open();
+
+            string sql = "SELECT * FROM blogger";
+
+            var cmd = new MySqlCommand(sql, connector);
+
+            var datareader = cmd.ExecuteReader();
+
+            while (datareader.Read())
+            {
+                var blogger = new Blogger
+                {
+                    Id = datareader.GetInt32(0),
+                    Name = datareader.GetString(1),
+                    Email = datareader.GetString(2),
+                    Age = datareader.GetInt32(3),
+                    Password = datareader.GetString(4),
+                    RegistrationTime = datareader.GetDateTime(5),
+                };
+
+                lista.Add(blogger);
+                
+            }
+
+
+            connector.Close();
+            return new { message = "Sikeres lekérdezés. ", result = lista};
         }
 
     }
