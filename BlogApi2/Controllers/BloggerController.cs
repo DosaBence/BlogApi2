@@ -3,36 +3,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApi2.Controllers
 {
-    [Route("blogger")]
+    [Route("blogger")]//alapértelmezett elérési útvonal
     [ApiController]
     public class BloggerController : ControllerBase
     {
-        [HttpGet]
-        public string Get() 
+
+        public readonly string ConnectionString = "server=localhost;database=blog2;password=";
+
+        [HttpGet("bloggers")] //attribútum
+        public object GetAllBlogger() 
         {
-            return "Hello World"; 
+            return "Hello World";
         }
 
-
-        [HttpGet("getAll")]
-        public ResponseResult GetAll()
-        {
-            var message = new ResponseResult
-            {
-                Message = "Hello world"
-            };
-
-
-            return message;
-        }
     }
-
-
-    public class ResponseResult
-    {
-        public string Message { get; set; }
-    }
-
 
 
 }
